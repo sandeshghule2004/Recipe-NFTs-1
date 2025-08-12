@@ -1,0 +1,38 @@
+;; ========================
+;; Recipe-NFTs.clar
+;; ========================
+
+(define-non-fungible-token recipe-nft uint)
+
+(define-data-var contract-owner principal tx-sender)
+
+(define-constant err-not-owner        (err u100))
+(define-constant err-invalid-recipient (err u101))
+(define-constant err-already-minted   (err u102))
+
+(define-public (mint-recipe (id uint) (recipient principal))
+  (let (
+        ;; bind a “safe” version of recipient after all checks
+        (safe-recipient
+          (begin
+            (asserts! (is-eq tx-sender (var-get contract-owner)) err-not-owner)
+            (asserts! (is-standard-principal recipient) err-invalid-recipient)
+            (asserts! (is-none? (nft-get-owner? recipe-nft id)) err-already-minted)
+            recipient
+          )
+        )
+       )
+    (begin
+      (try! (nft-mint? recipe-nft id safe-recipient))
+      (ok id)
+    )
+  )
+)
+
+(define-read-only (get-owner (id uint))
+  (nft-get-owner? recipe-nft id)
+)
+
+(define-read-only (get-contract-owner)
+  (var-get contract-owner)
+)

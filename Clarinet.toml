@@ -1,0 +1,31 @@
+[project]
+name = 'stack-wrkshp'
+description = ''
+authors = []
+telemetry = true
+cache_dir = '.\.cache'
+requirements = []
+
+[contracts.Recipe-NFTs]
+path = 'contracts/Recipe-NFTs.clar'
+clarity_version = 3
+epoch = 'latest'
+
+[repl.analysis]
+passes = ['check_checker']
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
+
+[repl.remote_data]
+enabled = false
+api_url = 'https://api.hiro.so'
+
+# --- Network Configurations ---
+[network.testnet]
+stacks_node_rpc = "https://api.testnet.hiro.so"
+bitcoin_node_rpc = "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+transaction_version = 0
